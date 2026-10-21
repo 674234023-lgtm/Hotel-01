@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เข้าสู่ระบบหอพัก รุกขวัลย์</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--card:#141414;--field:#1c1c1e;--line:#2a2a2d;--text:#f2f2f3;--muted:#9a9aa2;--btn:#1f3a9a;--btn-h:#2a49b8;--link:#5b7cf0;--ok:#3ecf8e;--warn:#f2b84b;--bad:#ef6a6a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#eceef2;--card:#fff;--field:#f3f4f7;--line:#d8dbe2;--text:#14161a;--muted:#5d6472;--link:#2a49b8}}
+:root[data-theme="light"]{--bg:#eceef2;--card:#fff;--field:#f3f4f7;--line:#d8dbe2;--text:#14161a;--muted:#5d6472;--link:#2a49b8}
+:root[data-theme="dark"]{--bg:#0b0b0c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans Thai',system-ui,sans-serif}
+.view{display:none;min-height:100%;padding:24px 16px}
+.view.on{display:flex}
+#login.on{align-items:center;justify-content:center}
+.login-card{width:100%;max-width:765px;background:var(--card);border:1px solid var(--line);border-radius:32px;padding:44px 36px 40px}
+.login-card h1{margin:0 0 8px;text-align:center;font-size:26px;font-weight:700}
+.sub{margin:0 0 34px;text-align:center;color:var(--muted);font-size:14px}
+label{display:block;font-weight:600;font-size:15px;margin:0 0 10px}
+input{width:100%;height:54px;background:var(--field);border:1px solid var(--line);border-radius:18px;color:var(--text);font:inherit;font-size:16px;padding:0 18px;margin-bottom:24px;outline:none}
+input:focus{border-color:var(--link)}
+.btn{width:100%;height:54px;border:0;border-radius:27px;background:var(--btn);color:#fff;font:inherit;font-size:16px;font-weight:500;cursor:pointer}
+.btn:hover{background:var(--btn-h)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:-8px 0 12px}
+hr{border:0;border-top:1px solid var(--line);margin:32px 0 20px}
+.hint h3{margin:0 0 10px;font-size:14px;color:var(--link);font-weight:600}
+.hint ul{margin:0;padding:0;list-style:none}
+.hint li{font-size:16px;line-height:1.7}
+.hint b{font-weight:600}
+.app{flex-direction:column;max-width:960px;margin:0 auto;width:100%}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.top h2{margin:0;font-size:22px}
+.top small{color:var(--muted);display:block;font-size:13px}
+.out{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:20px;padding:8px 18px;font:inherit;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{font-size:26px;display:block}.stat span{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.bed{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.bed h4{margin:0 0 4px;font-size:17px}.bed p{margin:0 0 12px;color:var(--muted);font-size:13px}
+.tag{font-size:12px;padding:3px 10px;border-radius:12px;border:1px solid currentColor;display:inline-block}
+.free{color:var(--ok)}.booked{color:var(--warn)}.fix{color:var(--bad)}
+.bed button,select{font:inherit;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--text);padding:8px 14px;cursor:pointer}
+.bed button.pri{background:var(--btn);border-color:var(--btn);color:#fff;width:100%;margin-top:6px}
+.bed button:disabled{opacity:.4;cursor:not-allowed}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:480px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500}
+tr:last-child td{border-bottom:0}
+.tw input,.tw select{height:44px;margin:0;border-radius:12px;font-size:15px;padding:0 12px;background:var(--field);border:1px solid var(--line);color:var(--text);font-family:inherit;width:100%}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}
+.sec h3{margin:0;font-size:19px}
+.add{background:#6e8bff;color:#0b0b0c;border:0;border-radius:14px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+.mini{font:inherit;font-size:14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--text);padding:0 14px;height:44px;cursor:pointer;white-space:nowrap}
+.mini.del{color:var(--bad);border-color:var(--bad);background:transparent}
+.bk{white-space:nowrap;font-weight:500}
+.tw table{min-width:900px}.tw td{padding:8px 8px}.tw th{padding:12px 8px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal[hidden]{display:none}
+.mbox{width:100%;max-width:560px;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.mh h3{margin:0;font-size:22px}
+.x{background:none;border:0;color:var(--muted);font-size:28px;cursor:pointer;line-height:1}
+.pos{background:var(--field);border:1px solid var(--line);border-radius:26px;padding:14px 20px;margin-bottom:22px}
+.pos small{color:var(--muted);display:block;margin-bottom:6px}.pos div{font-size:18px}
+.mf{display:flex;justify-content:flex-end;align-items:center;gap:8px}.mf .btn{width:auto;padding:0 28px}
+.ghost{background:none;border:0;color:var(--muted);font:inherit;cursor:pointer;padding:0 16px;height:54px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--btn);color:#fff;padding:12px 22px;border-radius:20px;z-index:20}
+#toast[hidden]{display:none}
+.sync{font-size:12px}
+.cfgwarn{max-width:765px;margin:0 auto 16px;background:#3a2a12;border:1px solid #6b4a1c;color:#f2c98a;border-radius:16px;padding:14px 18px;font-size:14px;line-height:1.6}
+.cfgwarn code{background:#0006;padding:1px 6px;border-radius:6px}
+.mybox{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;margin-bottom:20px}
+.mybox label{font-size:14px;color:var(--muted);font-weight:500;margin-bottom:10px}
+.myrow{display:flex;gap:10px}
+.myrow input{flex:1;height:48px;background:var(--field);border:1px solid var(--line);border-radius:14px;color:var(--text);font:inherit;font-size:15px;padding:0 16px}
+.mini.pri2{background:var(--btn);border-color:var(--btn);color:#fff;height:48px;padding:0 20px}
+.myres{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.myitem{background:var(--field);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.myitem b{font-size:15px}
+.myitem span{color:var(--muted)}
+.myempty{color:var(--muted);font-size:14px;padding:6px 2px}
+#register.on{align-items:center;justify-content:center}
+.swap{text-align:center;margin:22px 0 0;color:var(--muted);font-size:15px}
+.swap a{color:var(--link);font-weight:600;cursor:pointer;text-decoration:none}
+.swap a:hover{text-decoration:underline}
+.okmsg{color:var(--ok);font-size:14px;min-height:20px;margin:-8px 0 12px;text-align:center}
+.who{font-size:13px;color:var(--muted)}
+.btn:disabled{opacity:.6;cursor:wait}
+</style>
+</head>
+<body>
+
+<section id="login" class="view on">
+  <form class="login-card" id="form" autocomplete="off" novalidate>
+    <h1>เข้าสู่ระบบหอพัก รุกขวัลย์</h1>
+    <p class="sub">เข้าสู่ระบบด้วยบัญชีของคุณเพื่อใช้งานระบบจองเตียงพัก</p>
+    <label for="u">ชื่อผู้ใช้งาน (Username)</label>
+    <input id="u" type="text" autocapitalize="off">
+    <label for="p">รหัสผ่าน (Password)</label>
+    <input id="p" type="password">
+    <div class="okmsg" id="okmsg"></div>
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" type="submit" id="loginBtn">เข้าสู่ระบบ</button>
+    <p class="swap">ยังไม่มีบัญชี? <a id="toReg">สมัครสมาชิก</a></p>
+  </form>
+</section>
+
+<section id="register" class="view">
+  <form class="login-card" id="regForm" autocomplete="off" novalidate>
+    <h1>สมัครสมาชิก</h1>
+    <p class="sub">สร้างบัญชีใหม่เพื่อจองเตียงพัก หอพัก รุกขวัลย์</p>
+    <label for="ru">ชื่อผู้ใช้งาน (Username)</label>
+    <input id="ru" type="text" autocapitalize="off" placeholder="อังกฤษ/ตัวเลข 4-30 ตัว">
+    <label for="rn">ชื่อ-นามสกุล</label>
+    <input id="rn" type="text" placeholder="เช่น สมชาย ใจดี">
+    <label for="rph">เบอร์โทรศัพท์</label>
+    <input id="rph" type="tel" placeholder="เช่น 081-234-5678">
+    <label for="rp">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label>
+    <input id="rp" type="password">
+    <label for="rp2">ยืนยันรหัสผ่าน</label>
+    <input id="rp2" type="password">
+    <div class="err" id="rerr" role="alert"></div>
+    <button class="btn" type="submit" id="regBtn">สมัครสมาชิก</button>
+    <p class="swap">มีบัญชีอยู่แล้ว? <a id="toLogin">เข้าสู่ระบบ</a></p>
+  </form>
+</section>
+
+<section id="guest" class="view"><div class="app">
+  <div class="top"><div><h2>จองเตียงพัก</h2><small>สิทธิ์: ผู้เข้าพัก · <span class="who" id="whoG"></span> · <span class="sync"></span></small></div><button class="out" data-out>ออกจากระบบ</button></div>
+
+  <div class="mybox">
+    <label for="mp">เช็คการจองของฉัน (ค้นหาด้วยเบอร์โทรศัพท์ที่ใช้ตอนจอง)</label>
+    <div class="myrow">
+      <input id="mp" type="tel" placeholder="เช่น 081-234-5678">
+      <button class="mini pri2" id="myBtn">ค้นหา</button>
+    </div>
+    <div id="myResult"></div>
+  </div>
+
+  <div class="grid" id="guestGrid"></div>
+</div></section>
+
+<section id="admin" class="view"><div class="app">
+  <div class="top"><div><h2>Dashboard ผู้ดูแลหอพัก</h2><small>สิทธิ์: ผู้ดูแล · <span class="who" id="whoA"></span> · <span class="sync"></span></small></div><button class="out" data-out>ออกจากระบบ</button></div>
+  <div class="stats" id="stats"></div>
+  <div class="sec"><h3>🛏️ จัดการห้องพัก</h3><button class="add" id="addRoom">+ เพิ่มห้อง</button></div>
+  <div class="tw"><table><thead><tr><th style="width:15%">เลขห้อง</th><th style="width:31%">ประเภท</th><th style="width:12%">ราคา</th><th style="width:12%">เปิดใช้งาน</th><th>จอง</th><th></th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+  <div class="sec" style="margin-top:28px"><h3>📋 รายชื่อผู้เข้าพัก</h3></div>
+  <div class="tw"><table style="min-width:640px"><thead><tr><th>เวลา</th><th>ห้อง</th><th>ตำแหน่ง</th><th>ชื่อ-นามสกุล</th><th>เบอร์โทร</th></tr></thead><tbody id="bk"></tbody></table></div>
+</div></section>
+
+<div id="modal" class="modal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="mh"><h3 id="mt">ยืนยันการจองเตียงพัก</h3><button class="x" data-close aria-label="ปิด">×</button></div>
+  <div class="pos"><small>รายละเอียดตำแหน่ง</small><div id="pos"></div></div>
+  <label for="gn">ชื่อ-นามสกุล ผู้เข้าพัก</label><input id="gn" placeholder="เช่น สมชาย ใจดี" autocomplete="off">
+  <label for="gp">เบอร์โทรศัพท์ติดต่อ</label><input id="gp" type="tel" placeholder="เช่น 081-234-5678" autocomplete="off">
+  <div class="err" id="merr" role="alert"></div>
+  <div class="mf"><button class="ghost" data-close>ยกเลิก</button><button class="btn" id="confirm">ยืนยันการจอง</button></div>
+</div></div>
+<div id="toast" hidden></div>
+
+<script>
+/* ====== ตั้งค่า Supabase ====== */
+const SUPABASE_URL = "https://zlpqyrakgveoddqmhrpl.supabase.co";       // เช่น https://xxxxxxxx.supabase.co
+const SUPABASE_ANON_KEY = "sb_publishable_-rADAbHGM6FmRj5D1M71QA_OawCfSyc";  // anon public key จากหน้า Project Settings > API
+/* ============================== */
+
+const CAP = { bed8: 8, room2: 1, month: 1 };
+const TLABEL = { bed8: "รายวัน · ห้องรวม 8 คน (รายเตียง)", room2: "รายวัน · ห้อง 2 คน (เหมาห้อง)", month: "รายเดือน (เหมาห้อง)" };
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const cap = r => CAP[r.type] || 1;
+const configured = () => !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+let rooms = [], bookings = [], pending = null, currentUser = null;
+
+function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id===id)) }
+function badge(t,c){ document.querySelectorAll('.sync').forEach(e=>{e.textContent=t;e.style.color=c}) }
+function toast(t){ const e=$('#toast'); e.textContent=t; e.hidden=false; setTimeout(()=>e.hidden=true,2500) }
+
+/* ---------- ชั้นเชื่อมต่อ Supabase (REST/PostgREST) ---------- */
+async function sb(path, opts={}){
+  const res = await fetch(SUPABASE_URL + path, {
+    method: opts.method || 'GET',
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if(!res.ok){ throw new Error((await res.text()) || res.statusText) }
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+async function loadAll(){
+  const [r,b] = await Promise.all([
+    sb('/rest/v1/rooms?select=*&order=name.asc'),
+    sb('/rest/v1/bookings?select=*&order=time.desc&limit=200'),
+  ]);
+  rooms = r; bookings = b;
+}
+async function refresh(silent){
+  if(!configured()) return;
+  try{
+    if(!silent) badge('Supabase: กำลังเชื่อมต่อ…','var(--muted)');
+    await loadAll();
+    badge('Supabase: เชื่อมต่อแล้ว','var(--ok)');
+    render();
+  }catch(err){
+    badge('Supabase: เชื่อมต่อไม่ได้','var(--bad)');
+    console.error(err);
+  }
+}
+
+/* ---------- ระบบสมาชิก (สมัคร / เข้าสู่ระบบ ผ่านฟังก์ชันใน Supabase) ---------- */
+const rpc = (fn, body) => sb('/rest/v1/rpc/'+fn, {method:'POST', body});
+const REG_ERR = {
+  bad_username:'ชื่อผู้ใช้ต้องเป็นอังกฤษ ตัวเลข _ หรือ . ยาว 4-30 ตัว',
+  weak_password:'รหัสผ่านต้องยาวอย่างน้อย 6 ตัวอักษร',
+  bad_name:'กรุณากรอกชื่อ-นามสกุล',
+  bad_phone:'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง',
+  exists:'ชื่อผู้ใช้นี้ถูกใช้แล้ว กรุณาเลือกชื่ออื่น'
+};
+function enter(user){
+  currentUser = user;
+  const isAdmin = user.role === 'admin';
+  $('#whoA').textContent = user.name || user.username;
+  $('#whoG').textContent = user.name || user.username;
+  if(!isAdmin && user.phone){ $('#mp').value = user.phone; lookupMyBookings(); }
+  render();
+  show(isAdmin ? 'admin' : 'guest');
+}
+
+/* ---------- Render ---------- */
+function renderGuest(){
+  $('#guestGrid').innerHTML = rooms.map(r=>{
+    const free = cap(r) - r.booked, can = r.open && free>0;
+    const st = !r.open ? ['fix','ปิดให้บริการ'] : free>0 ? ['free', cap(r)>1?`ว่าง ${free}/${cap(r)} เตียง`:'ว่าง'] : ['booked','เต็ม'];
+    return `<div class="bed"><h4>${esc(r.name)||'(ไม่มีชื่อ)'}</h4><p>${TLABEL[r.type]}<br>${r.price} บาท</p>
+      <span class="tag ${st[0]}">${st[1]}</span>
+      <button class="pri" data-book="${r.id}" ${can?'':'disabled'}>${cap(r)>1?'จองเตียง':'จองห้องนี้'}</button></div>`;
+  }).join('');
+}
+function renderStats(){
+  const on = rooms.filter(r=>r.open), tot = on.reduce((a,r)=>a+cap(r),0), bk = on.reduce((a,r)=>a+r.booked,0);
+  $('#stats').innerHTML = [["ห้องทั้งหมด",rooms.length],["เปิดใช้งาน",on.length],["จองแล้ว",bk],["ว่าง",tot-bk]]
+    .map(([k,v])=>`<div class="stat"><b>${v}</b><span>${k}</span></div>`).join('');
+}
+function renderRows(){
+  $('#rows').innerHTML = rooms.map(r=>`<tr data-id="${r.id}">
+    <td><input data-f="name" value="${esc(r.name)}" placeholder="เลขห้อง"></td>
+    <td><select data-f="type">${Object.entries(TLABEL).map(([k,v])=>`<option value="${k}" ${k===r.type?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td><input data-f="price" type="number" min="0" value="${r.price}"></td>
+    <td><select data-f="open"><option value="1" ${r.open?'selected':''}>เปิด</option><option value="0" ${r.open?'':'selected'}>ปิด</option></select></td>
+    <td class="bk">${r.booked}/${cap(r)}</td>
+    <td><button class="mini" data-release>คืนห้อง</button></td>
+    <td><button class="mini del" data-del>ลบ</button></td></tr>`).join('')
+    || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">ยังไม่มีห้อง กด "+ เพิ่มห้อง"</td></tr>';
+}
+function renderBookings(){
+  $('#bk').innerHTML = bookings.map(b=>`<tr><td>${esc(new Date(b.time).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}))}</td><td>${esc(b.room)}</td><td>${esc(b.slot)}</td><td>${esc(b.name)}</td><td>${esc(b.phone)}</td></tr>`).join('')
+    || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">ยังไม่มีการจอง</td></tr>';
+}
+function render(){ renderRows(); renderStats(); renderGuest(); renderBookings(); }
+const rowOf = el => { const tr=el.closest('tr'); return tr && rooms.find(r=>String(r.id)===tr.dataset.id) };
+
+/* ---------- Actions (เขียนกลับ Supabase ทันที) ---------- */
+async function patchRoom(id, fields){
+  try{ await sb(`/rest/v1/rooms?id=eq.${encodeURIComponent(id)}`, {method:'PATCH', body:fields, prefer:'return=minimal'}) }
+  catch(err){ toast('บันทึกไม่สำเร็จ: '+err.message) }
+}
+async function addRoom(){
+  const id = 'R' + Date.now().toString(36).toUpperCase();
+  try{
+    await sb('/rest/v1/rooms', {method:'POST', body:[{id, name:id, type:'bed8', price:100, open:true, booked:0}]});
+    await refresh(true);
+  }catch(err){ toast('เพิ่มห้องไม่สำเร็จ: '+err.message) }
+}
+async function deleteRoom(id){
+  try{ await sb(`/rest/v1/rooms?id=eq.${encodeURIComponent(id)}`, {method:'DELETE', prefer:'return=minimal'}); await refresh(true) }
+  catch(err){ toast('ลบไม่สำเร็จ: '+err.message) }
+}
+async function releaseRoom(id){
+  try{
+    await sb('/rest/v1/rpc/release_room', {method:'POST', body:{p_room_id:id}, prefer:'return=minimal'});
+    await refresh(true);
+  }catch(err){ toast('คืนห้องไม่สำเร็จ: '+err.message) }
+}
+async function bookRoom(id, name, phone){
+  return sb('/rest/v1/rpc/book_room', {method:'POST', body:{p_room_id:id, p_name:name, p_phone:phone}});
+}
+/* ---------- เช็คการจองของฉัน (ค้นด้วยเบอร์โทร) ---------- */
+async function lookupMyBookings(){
+  const box = $('#myResult');
+  const phone = $('#mp').value.trim();
+  if(!phone){ box.innerHTML = '<div class="myempty">กรุณากรอกเบอร์โทรศัพท์ที่ใช้ตอนจอง</div>'; return }
+  box.innerHTML = '<div class="myempty">กำลังค้นหา…</div>';
+  try{
+    const rows = await sb('/rest/v1/bookings?select=*&phone=eq.'+encodeURIComponent(phone)+'&order=time.desc');
+    if(!rows || !rows.length){ box.innerHTML = '<div class="myempty">ไม่พบการจองของเบอร์นี้</div>'; return }
+    box.innerHTML = '<div class="myres">' + rows.map(b=>
+      `<div class="myitem"><span><b>${esc(b.room)}</b> · ${esc(b.slot)}</span><span>${esc(b.name)}</span><span>${esc(new Date(b.time).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}))}</span></div>`
+    ).join('') + '</div>';
+  }catch(err){ box.innerHTML = '<div class="myempty">ค้นหาไม่สำเร็จ ลองใหม่อีกครั้ง</div>' }
+}
+$('#myBtn').addEventListener('click', lookupMyBookings);
+$('#mp').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); lookupMyBookings() } });
+/* ---------- Modal จองห้อง ---------- */
+function openModal(id){
+  const r = rooms.find(x=>String(x.id)===String(id)); if(!r) return;
+  pending = { id: r.id, slot: cap(r)>1 ? 'B'+(r.booked+1) : 'ทั้งห้อง' };
+  $('#pos').innerHTML = `<b>ห้อง</b> ${esc(r.name)} • ${pending.slot}`;
+  $('#gn').value=currentUser?.name||''; $('#gp').value=currentUser?.phone||''; $('#merr').textContent='';
+  $('#modal').hidden=false; $('#gn').focus();
+}
+function closeModal(){ $('#modal').hidden=true; pending=null }
+async function confirmBooking(){
+  const name=$('#gn').value.trim(), phone=$('#gp').value.trim(), err=$('#merr');
+  if(!name){ err.textContent='กรุณากรอกชื่อ-นามสกุล'; return }
+  if(!/^[0-9\-\s+]{9,15}$/.test(phone)){ err.textContent='กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'; return }
+  const btn=$('#confirm'); btn.disabled=true;
+  try{
+    const d = await bookRoom(pending.id, name, phone);
+    btn.disabled=false;
+    if(!d || d.ok===false){ err.textContent = d && d.error==='full' ? 'เตียงนี้เพิ่งถูกจองไป กรุณาเลือกใหม่' : 'จองไม่สำเร็จ กรุณาลองใหม่'; return }
+    await refresh(true); closeModal(); toast('จองสำเร็จ ✓');
+  }catch(ex){ btn.disabled=false; err.textContent='เชื่อมต่อฐานข้อมูลไม่สำเร็จ' }
+}
+
+/* ---------- Events ---------- */
+$('#confirm').addEventListener('click', confirmBooking);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !$('#modal').hidden) closeModal() });
+
+$('#form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const u=$('#u').value.trim(), p=$('#p').value, err=$('#err'), btn=$('#loginBtn');
+  $('#okmsg').textContent='';
+  if(!u || !p){ err.textContent='กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'; return }
+  if(!configured()){ err.textContent='ยังไม่ได้ตั้งค่า Supabase'; return }
+  err.textContent=''; btn.disabled=true; btn.textContent='กำลังเข้าสู่ระบบ…';
+  try{
+    const d = await rpc('login_user', {p_username:u, p_password:p});
+    if(!d || !d.ok){ err.textContent='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'; return }
+    $('#p').value='';
+    enter(d);
+  }catch(ex){
+    console.error(ex);
+    err.textContent='เชื่อมต่อฐานข้อมูลไม่สำเร็จ (ตรวจสอบว่ารันไฟล์ supabase-auth-setup.sql แล้ว)';
+  }finally{ btn.disabled=false; btn.textContent='เข้าสู่ระบบ' }
+});
+
+$('#regForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const u=$('#ru').value.trim(), n=$('#rn').value.trim(), ph=$('#rph').value.trim(),
+        p=$('#rp').value, p2=$('#rp2').value, err=$('#rerr'), btn=$('#regBtn');
+  if(!/^[A-Za-z0-9_.]{4,30}$/.test(u)){ err.textContent=REG_ERR.bad_username; return }
+  if(!n){ err.textContent=REG_ERR.bad_name; return }
+  if(!/^[0-9\-\s+]{9,15}$/.test(ph)){ err.textContent=REG_ERR.bad_phone; return }
+  if(p.length<6){ err.textContent=REG_ERR.weak_password; return }
+  if(p!==p2){ err.textContent='รหัสผ่านทั้งสองช่องไม่ตรงกัน'; return }
+  if(!configured()){ err.textContent='ยังไม่ได้ตั้งค่า Supabase'; return }
+  err.textContent=''; btn.disabled=true; btn.textContent='กำลังสมัคร…';
+  try{
+    const d = await rpc('register_user', {p_username:u, p_password:p, p_name:n, p_phone:ph});
+    if(!d || !d.ok){ err.textContent = REG_ERR[d && d.error] || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่'; return }
+    $('#regForm').reset();
+    $('#u').value = u; $('#p').value=''; $('#err').textContent='';
+    $('#okmsg').textContent='สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ';
+    show('login');
+  }catch(ex){
+    console.error(ex);
+    err.textContent='เชื่อมต่อฐานข้อมูลไม่สำเร็จ (ตรวจสอบว่ารันไฟล์ supabase-auth-setup.sql แล้ว)';
+  }finally{ btn.disabled=false; btn.textContent='สมัครสมาชิก' }
+});
+$('#toReg').addEventListener('click', ()=>{ $('#rerr').textContent=''; show('register') });
+$('#toLogin').addEventListener('click', ()=>{ $('#err').textContent=''; $('#okmsg').textContent=''; show('login') });
+
+document.addEventListener('click', e=>{
+  const t=e.target;
+  if(t.dataset.book) openModal(t.dataset.book);
+  if('close' in t.dataset) closeModal();
+  if('out' in t.dataset){ currentUser=null; $('#form').reset(); $('#okmsg').textContent=''; $('#mp').value=''; $('#myResult').innerHTML=''; show('login') }
+  if(t.id==='addRoom') addRoom();
+  const r = rowOf(t);
+  if(r && 'release' in t.dataset) releaseRoom(r.id);
+  if(r && 'del' in t.dataset){
+    if(t.dataset.arm) deleteRoom(r.id);
+    else { t.dataset.arm=1; t.textContent='ยืนยัน?' }
+  }
+});
+
+let saveT;
+$('#rows').addEventListener('input', e=>{
+  const r=rowOf(e.target), f=e.target.dataset.f;
+  if(!r || !(f==='name'||f==='price')) return;
+  r[f] = f==='price' ? Math.max(0, +e.target.value||0) : e.target.value;
+  renderGuest();
+  clearTimeout(saveT);
+  saveT = setTimeout(()=>patchRoom(r.id, {[f]: r[f]}), 500);
+});
+$('#rows').addEventListener('change', e=>{
+  const r=rowOf(e.target), f=e.target.dataset.f;
+  if(!r) return;
+  if(f==='type'){ r.type=e.target.value; patchRoom(r.id,{type:r.type}); render() }
+  if(f==='open'){ r.open = e.target.value==='1'; patchRoom(r.id,{open:r.open}); render() }
+});
+
+/* ---------- เริ่มทำงาน ---------- */
+if(!configured()){
+  badge('ยังไม่ได้ตั้งค่า Supabase','var(--warn)');
+  document.body.insertAdjacentHTML('afterbegin', `<div class="cfgwarn" style="margin-top:24px">⚠️ ยังไม่ได้ใส่ <code>SUPABASE_URL</code> และ <code>SUPABASE_ANON_KEY</code> ในไฟล์นี้ ระบบจะยังใช้งานไม่ได้จนกว่าจะตั้งค่าตามคู่มือ</div>`);
+} else {
+  refresh();
+  setInterval(()=>{ if(!document.hidden) refresh(true) }, 8000);
+}
+</script>
+</body>
+</html>
